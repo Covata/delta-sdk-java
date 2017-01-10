@@ -1,0 +1,19 @@
+language: java
+jdk:
+- oraclejdk8
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+deploy:
+  provider: releases
+  api_key:
+    secure: rxTINKv9rVpw8E0COVBZxMjbhfvm6Ffm3A28X+c+MRSvUHyP1NVdLLkU1YCJZzpVnf0820whKHzoC6ZVUkwrObRAtFL1YLKhqtHU4DYrpmOthuJrFf1YSgeQq2wr3wkW7WroUIkYFQiWbA1Ww4zOAOxZNY4ftfT62HhAQi83r8cgrO/wpW8jmT4g8oeeVvxflXu8Ys9JYK2C0bn2JnL2xB+auUSHNAYWilIHp19I/jx9UduPknKJm5R42GDfxX1FvnzagPaECZTtR4oABqcugpVK2Z9HTXpPVHlU4daigvsSQHXofsO6bhGPKKxKL2NL778SckeyVuPdCVbxT0wPdREdHNuuu/QHQx3duOv2uzKb/s4gU1AMXJ6Kp/Q8z1QeiISDy5tHMD4fVEMgpg79wN0Z6i1TSH2Cxwg2RPIz42Thk6uzqNobo281ghuqQMHdUZ+l2XO5lZz2q8bnIuoY1CDa5UyhdN2cRAaeWblAXlwBHLavYy2JLAyq+6/ar/vZUz0vCWpB/9RhDkMN6bD2wqGt1Tg3WVtpw14epATrTjuQvxobcwRjaoLjN89sLNfFd4gNddoXtL6KYq0ZHk3ler5QVEAF3UjeoTy1SxLipdFH2bF7d2vAvxuUg6iF3HujZbJCll1w+Fx1F7DcwVgcCwqauP1RX10CmtBw/ArYoL4=
+  file: sdk/build/libs/delta_sdk_java.jar
+  skip_cleanup: true
+  on:
+    repo: Covata/delta-sdk-java
+    tags: true

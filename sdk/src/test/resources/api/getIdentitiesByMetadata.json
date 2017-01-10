@@ -1,0 +1,12 @@
+[
+  {
+    "id": "10b73150-5357-48bc-a5fe-5377df6fa326",
+    "cryptoPublicKey": "ck",
+    "externalId": "abc",
+    "version": 10,
+    "metadata": {
+      "city": "Sydney",
+      "country": "Australia"
+    }
+  }
+]

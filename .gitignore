@@ -1,0 +1,13 @@
+.gradle/
+.idea/*
+**/*.iml
+**/*.ipr
+**/*.iws
+**/build/**
+**/classes/**
+
+# Eclipse
+.project
+.classpath
+.settings/
+**/bin/

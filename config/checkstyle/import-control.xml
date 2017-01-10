@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright 2016 Covata Limited or its affiliates
+  ~
+  ~ Information contained within this file cannot be copied,
+  ~ distributed and/or practised without the written consent of
+  ~ Covata Limited or its affiliates.
+  -->
+
+<!DOCTYPE import-control PUBLIC
+        "-//Puppy Crawl//DTD Import Control 1.0//EN"
+        "http://www.puppycrawl.com/dtds/import_control_1_0.dtd">
+<import-control pkg="com">
+
+    <allow pkg="java"/>
+    <allow pkg="org"/>
+    <allow pkg="javax"/>
+    <allow pkg="net"/>
+    <allow pkg="com"/>
+    <allow pkg="io"/>
+    <allow pkg="ch.qos"/>
+    <allow pkg="okhttp3"/>
+    <allow pkg="retrofit2"/>
+    <allow pkg="okio"/>
+    <allow pkg="nl.jqno.equalsverifier"/>
+
+    <subpackage name="covata">
+        <disallow pkg="com.acceptance"/>
+    </subpackage>
+
+    <subpackage name="acceptance">
+        <disallow pkg="com.covata"/>
+    </subpackage>
+</import-control>

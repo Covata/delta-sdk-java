@@ -1,0 +1,15 @@
+[
+  {
+    "id": "067e6162-3b6f-4ae2-a171-2470b63dff00",
+    "sourceIp": "1.1.1.1",
+    "timestamp": "2016-11-04T17:02:47Z",
+    "type": "eventType",
+    "host": "example.server",
+    "eventDetails": {
+      "baseSecretId": "baseSecretId",
+      "requesterId": "requesterId",
+      "secretOwnerId": "secretOwnerId",
+      "rsaKeyOwnerId": "rsaKeyOwnerId"
+    }
+  }
+]

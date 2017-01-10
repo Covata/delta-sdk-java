@@ -1,0 +1,165 @@
+group = 'com.covata.delta'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'checkstyle'
+    apply plugin: 'findbugs'
+    apply plugin: 'jacoco'
+    apply plugin: 'eclipse'
+
+    targetCompatibility = 1.8
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile 'commons-io:commons-io:2.4',
+                'commons-codec:commons-codec:1.10',
+                'org.slf4j:slf4j-api:1.7.21',
+                'ch.qos.logback:logback-classic:1.1.7',
+                'ch.qos.logback:logback-core:1.1.7'
+
+        testCompile 'junit:junit:4.12'
+    }
+
+    // From http://stackoverflow.com/questions/31353565/maven-cant-compile-using-rt-jar
+    compileJava {
+        options.fork = true
+        options.forkOptions.executable = 'javac'
+        options.compilerArgs << "-XDignore.symbol.file"
+    }
+
+    checkstyle {
+        toolVersion = "7.2"
+    }
+
+    tasks.withType(Checkstyle) {
+        configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+        source 'src'
+        include '**/*.java'
+        reports {
+            xml.enabled = true
+        }
+        classpath = files()
+    }
+
+    findbugs {
+        excludeFilter = file("${rootDir}/config/findbugs/excludeFilter.xml")
+    }
+
+    tasks.withType(FindBugs) {
+        reports {
+            html.enabled true
+            xml.enabled false
+        }
+    }
+
+    test {
+        reports {
+            junitXml.enabled = true
+            html.enabled = true
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+    }
+
+    check.dependsOn jacocoTestReport
+
+    javadoc {
+        source = sourceSets.main.allJava
+    }
+}
+
+project(':sdk') {
+    dependencies {
+        compile 'com.google.guava:guava:19.0',
+                'com.squareup.retrofit2:retrofit:2.1.0',
+                'com.squareup.retrofit2:converter-jackson:2.1.0',
+                'com.squareup.okhttp3:okhttp:3.4.1',
+                'com.squareup.okhttp3:logging-interceptor:3.4.1',
+                'org.bouncycastle:bcpkix-jdk15on:1.55'
+
+        testCompile 'org.mockito:mockito-core:1.10.19',
+                'nl.jqno.equalsverifier:equalsverifier:2.1.7',
+                'com.squareup.okhttp:mockwebserver:2.5.0'
+    }
+
+    jar {
+        baseName 'delta_sdk_java'
+    }
+}
+
+project('examples:fileshare') {
+    configurations {
+        extraLibs
+    }
+
+    dependencies {
+        compile project(':sdk'),
+                'commons-cli:commons-cli:1.3.1'
+        extraLibs 'org.bouncycastle:bcpkix-jdk15on:1.55'
+    }
+
+    // Bouncycastle libs must not be packed into the fatjar
+    task copyExtraLibs(type: Copy) {
+        from configurations.extraLibs
+        into tasks.jar.destinationDir
+    }
+
+    jar {
+        from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF', 'org/bouncycastle/**'
+
+        manifest {
+            attributes(
+                    "Main-Class": "com.covata.delta.sdk.examples.fileshare.Main"
+            )
+        }
+    }
+
+    tasks.jar.dependsOn copyExtraLibs
+}
+
+
+project('examples:helloworld') {
+    configurations {
+        extraLibs
+    }
+
+    checkstyle {
+        sourceSets = []
+    }
+
+    dependencies {
+        compile project(':sdk')
+        extraLibs 'org.bouncycastle:bcpkix-jdk15on:1.55'
+    }
+
+    // Bouncycastle libs must not be packed into the fatjar
+    task copyExtraLibs(type: Copy) {
+        from configurations.extraLibs
+        into tasks.jar.destinationDir
+    }
+
+    jar {
+        from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF', 'org/bouncycastle/**'
+
+        manifest {
+            attributes(
+                    "Main-Class": "com.covata.delta.sdk.examples.helloworld.Main"
+            )
+        }
+    }
+
+    tasks.jar.dependsOn copyExtraLibs
+}
+
+
