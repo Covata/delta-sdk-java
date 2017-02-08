@@ -42,7 +42,7 @@ import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 public class AuthorizationUtil {
     private static final Charset STRING_ENCODING_CHARSET = Charset.forName("UTF-8");
 
-    private static final String CVT_SCHEME = "CVT1-RSA2048-SHA256";
+    private static final String CVT_SCHEME = "CVT1-RSA4096-SHA256";
 
     private static final String SIGNING_ALGORITHM = "SHA256withRSAandMGF1";
 

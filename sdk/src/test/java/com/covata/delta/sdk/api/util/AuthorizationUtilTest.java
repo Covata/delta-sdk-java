@@ -58,7 +58,7 @@ public class AuthorizationUtilTest {
         Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
 
-    private static final String CVT_SIGNING_ALGORITHM = "CVT1-RSA2048-SHA256";
+    private static final String CVT_SIGNING_ALGORITHM = "CVT1-RSA4096-SHA256";
 
     private static final String IDENTITY_ID = "9dsf0-asd098-s9d8fa0sdf-9sdf";
 
@@ -206,7 +206,7 @@ public class AuthorizationUtilTest {
 
     @Test
     public void shouldReturnCorrectAuthHeader() throws Exception {
-        String expectedAuthPrefix = "CVT1-RSA2048-SHA256 Identity=9dsf0-asd098-s9d8fa0sdf-9sdf, " +
+        String expectedAuthPrefix = "CVT1-RSA4096-SHA256 Identity=9dsf0-asd098-s9d8fa0sdf-9sdf, " +
                 "SignedHeaders=content-type;cvt-date;cvt-identity-id;host, Signature=";
         KeyPair keyPair = SharedTestKeys.SIGNING_KEY_PAIR;
 
