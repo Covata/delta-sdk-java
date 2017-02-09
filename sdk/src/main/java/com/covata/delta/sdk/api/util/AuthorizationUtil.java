@@ -37,7 +37,7 @@ import static com.covata.delta.sdk.api.common.DeltaHeaders.CVT_DATE;
 import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 
 /**
- * Utility methods for request signing using CVT1-RSA2048-SHA256.
+ * Utility methods for request signing using CVT1-RSA4096-SHA256.
  */
 public class AuthorizationUtil {
     private static final Charset STRING_ENCODING_CHARSET = Charset.forName("UTF-8");
