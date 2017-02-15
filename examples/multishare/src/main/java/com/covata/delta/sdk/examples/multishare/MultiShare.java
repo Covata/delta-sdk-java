@@ -34,9 +34,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+/**
+ * This example demonstrates one producer (A) sharing a number of secrets to
+ * two recipients (B and C). The secrets being shared are defined in the
+ * resource file 'input.json'. At the end of the example, each participant will
+ * output the secrets that have been shared with them, including the contents.
+ *
+ * This example assumes you have a folder called "keystore" in your home
+ * directory.
+ */
 public class MultiShare {
-
-
 
     private static class Data {
         private String[] recipients;
@@ -141,7 +148,4 @@ public class MultiShare {
         MultiShare multiShare = new MultiShare();
         multiShare.run();
     }
-
-
-
 }
