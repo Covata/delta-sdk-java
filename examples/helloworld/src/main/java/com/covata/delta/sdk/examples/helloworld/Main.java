@@ -24,8 +24,11 @@ import com.covata.delta.sdk.model.DeltaSecret;
 
 /**
  * This example demonstrates the basics of creating identities, storing and
- * sharing secrets. It assumes you have a folder called "keystore" in your
- * home directory.
+ * sharing secrets.
+ *
+ * You will need to have a folder called "keystore" in your home directory. A
+ * keystore with the pass-phrase "passPhrase" should exist or will be created
+ * as a result of running this example.
  */
 public class Main {
 

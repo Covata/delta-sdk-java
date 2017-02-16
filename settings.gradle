@@ -1,4 +1,5 @@
 rootProject.name = 'delta-sdk'
 include 'sdk',
         'examples:fileshare',
-        'examples:helloworld'
+        'examples:helloworld',
+        'examples:multishare'
