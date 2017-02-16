@@ -123,8 +123,6 @@ public class MultiShare {
         }
     }
 
-
-
     private void printSharedSecrets() throws Exception {
         for (DeltaIdentity identity: recipients.values()) {
             List<DeltaSecret> secrets = client.getSecretsSharedWithMe(
