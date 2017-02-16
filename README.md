@@ -90,6 +90,32 @@ usage: java -cp "<path_to_fileshare_libs>/*"
  -s,--secret <secret id>            The Delta secret id
  -t,--target <target identity id>   Target identity id
  ```
+ 
+### Hello World 
+This example demonstrates the basics of creating identities, storing and sharing secrets.
+
+You will need to have a folder called "keystore" in your home directory. A keystore with the pass-phrase "passPhrase" should exist or will be created as a result of running this example. To run this example from the command line:
+```
+java -cp "./examples/helloworld/build/libs/*" com.covata.delta.sdk.examples.helloworld.Main
+```
+
+### Multi-Share
+
+The multi-share example demonstrates one producer (A) sharing a number of secrets to two recipients (B and C). At the end of the example, each recipient will output the secrets that have been shared with them, including the contents.
+
+You will need to have a folder called "keystore" in your home directory. A keystore with the pass-phrase "passPhrase" should exist or will be created as a result of running this example. To run this example from the command line:
+```
+java -cp "./examples/multishare/build/libs/*" com.covata.delta.sdk.examples.multishare.MultiShare ./examples/multishare/build/resources/main/input.json
+```
+The input file consists of JSON defining the data flowing from the producer to the recipients:
+```
+[
+  {"recipients": ["B", "C"], "content": "There was a boy called Eustace Clarence Scrubb, and he almost deserved it."},
+  {"recipients": ["B"], "content": "The Man in Black fled across the desert, and the Gunslinger followed."},
+  {"recipients": ["C"], "content": "The sun shone, having no alternative, on the nothing new."},
+  {"recipients": ["B", "C"], "content": "It was a bright cold day in April, and the clocks were striking thirteen."}
+]
+```
 
 ## License
 

@@ -185,13 +185,25 @@ project('examples:multishare') {
         into tasks.jar.destinationDir
     }
 
+    sourceSets {
+        main {
+            java {
+                srcDir 'src'
+            }
+            resources {
+                srcDir 'resources'
+                include 'input.json'
+            }
+        }
+    }
+
     jar {
         from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
         exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF', 'org/bouncycastle/**'
 
         manifest {
             attributes(
-                    "Main-Class": "com.covata.delta.sdk.examples.multishare.Main"
+                    "Main-Class": "com.covata.delta.sdk.examples.multishare.MultiShare"
             )
         }
     }

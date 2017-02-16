@@ -29,24 +29,24 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.stream.Collectors;
 
 /**
  * This example demonstrates one producer (A) sharing a number of secrets to
- * two recipients (B and C). The secrets being shared are defined in the
- * resource file 'input.json'. At the end of the example, each participant will
+ * two recipients (B and C). At the end of the example, each recipient will
  * output the secrets that have been shared with them, including the contents.
  *
- * This example assumes you have a folder called "keystore" in your home
- * directory.
+ * You will need to have a folder called "keystore" in your home directory. A
+ * keystore with the pass-phrase "passPhrase" should exist or will be created
+ * as a result of running this example.
  */
 public class MultiShare {
 
     private static class Data {
         private String[] recipients;
+
         private String content;
 
         public Data(String[] recipients, String content) {
@@ -63,8 +63,13 @@ public class MultiShare {
         }
     }
 
+    private List<Data> messages;
+
     private final DeltaClient client;
-    private Map<String, DeltaIdentity> identities = new HashMap<>();
+
+    private DeltaIdentity producer;
+
+    private Map<String, DeltaIdentity> recipients = new HashMap<>();
 
     private MultiShare() {
         DeltaClientConfig config = DeltaClientConfig.builder()
@@ -75,57 +80,57 @@ public class MultiShare {
         client = new DeltaClient(config);
     }
 
-    private void createIdentities() throws Exception {
-        createIdentity("A");
-        createIdentity("B");
-        createIdentity("C");
+    private void loadMessages(String messagesFile) throws Exception {
+        File file = new File(messagesFile);
+
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new InputStreamReader(
+                new FileInputStream(file), "UTF-8"));
+
+        messages = Arrays.asList(gson.fromJson(reader, Data[].class));
     }
 
-    private void createIdentity(String externalId) throws Exception {
+    private void createIdentities() throws Exception {
+        producer = createIdentity("A");
+        messages.stream()
+                .map(Data::getRecipients)
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toSet())
+                .forEach((x) -> recipients.put(x, createIdentity(x)));
+    }
+
+    private DeltaIdentity createIdentity(String externalId) {
         DeltaIdentity identity = client.createIdentity(externalId, Collections.emptyMap());
         System.out.println(String.format("Identity %s created; identity id = %s",
                 externalId, identity.getId()));
-        identities.put(externalId, identity);
+        return identity;
     }
 
-    private void createAndShareSecrets(Queue<Data> messages) throws Exception {
-        while (!messages.isEmpty()) {
-            Data message = messages.remove();
-            DeltaSecret secret = identities.get("A").createSecret(message.getContent());
+    private void createAndShareSecrets() throws Exception {
+        for (Data message: messages) {
+            DeltaSecret secret = producer.createSecret(message.getContent());
             System.out.println(String.format(
-                    "Identity A: Created a base secret; secret id = %s; content = '%s'",
-                    secret.getId(), secret.getContent()));
+                    "Identity %s: Created a base secret; secret id = %s; content = '%s'",
+                    producer.getExternalId(), secret.getId(), secret.getContent()));
 
             for (String externalId: message.getRecipients()) {
                 String derivedSecretId = secret.shareWith(
-                        identities.get(externalId)).getId();
+                        recipients.get(externalId)).getId();
                 System.out.println(String.format(
-                        "  Identity A: Shared a derived secret with Identity %s; derived secret id = %s",
-                        externalId, derivedSecretId));
+                        "  Identity %s: Shared a derived secret with Identity %s; derived secret id = %s",
+                        producer.getExternalId(), externalId, derivedSecretId));
             }
         }
     }
 
-    private Queue<Data> loadMessages() throws Exception {
-        File file = new File(getClass()
-                .getClassLoader()
-                .getResource("input.json")
-                .getFile());
 
-        Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new InputStreamReader(
-                        new FileInputStream(file), "UTF-8"));
-
-        return new LinkedList<>(
-                Arrays.asList(gson.fromJson(reader, Data[].class)));
-    }
 
     private void printSharedSecrets() throws Exception {
-        for (DeltaIdentity identity: identities.values()) {
+        for (DeltaIdentity identity: recipients.values()) {
             List<DeltaSecret> secrets = client.getSecretsSharedWithMe(
                     identity.getId(), 1, 5);
             System.out.println(String.format(
-                    "Identity %s has %d secrets shared with them.",
+                    "Identity %s has %d secrets shared with them:",
                     identity.getExternalId(), secrets.size()));
             for (DeltaSecret secretSharedWithMe: secrets) {
                 System.out.println(String.format(
@@ -138,14 +143,20 @@ public class MultiShare {
         }
     }
 
-    private void run() throws Exception {
+    private void run(String messagesFile) throws Exception {
+        loadMessages(messagesFile);
         createIdentities();
-        createAndShareSecrets(loadMessages());
+        createAndShareSecrets();
         printSharedSecrets();
     }
 
     public static void main(String[] args) throws Exception {
+        System.out.println("Running multi-share example...");
         MultiShare multiShare = new MultiShare();
-        multiShare.run();
+        if (args.length == 1) {
+            multiShare.run(args[0]);
+        } else {
+            System.out.println("Input file not specified.");
+        }
     }
 }
