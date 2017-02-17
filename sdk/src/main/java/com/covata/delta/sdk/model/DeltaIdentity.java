@@ -299,6 +299,18 @@ public class DeltaIdentity {
     }
 
     /**
+     * Gets a list of secrets shared with this identity bound by the pagination
+     * parameters.
+     *
+     * @param page the page number
+     * @param pageSize the maximum number of items contained in a page
+     * @return a list of secrets
+     */
+    public List<DeltaSecret> retrieveSecretsSharedWithMe(int page, int pageSize) {
+        return parent.getSecretsSharedWithMe(this.id, page, pageSize);
+    }
+
+    /**
      * Gets back a builder for a new <code>DeltaIdentity</code>. The parent
      * is the <code>DeltaClient</code> this identity will use to call
      * further API methods.

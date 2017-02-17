@@ -309,6 +309,28 @@ public class DeltaIdentityTest {
                         eq(pageSize));
     }
 
+    @Test
+    public void shouldRetrieveSecretsSharedWithMe() {
+        int page = 1;
+        int pageSize = 1;
+
+        DeltaIdentity deltaIdentity = DeltaIdentity.builder(mockDeltaClient)
+                .withId(IDENTITY_ID)
+                .build();
+
+        when(mockDeltaClient.getSecretsSharedWithMe(
+                eq(deltaIdentity.getId()),
+                eq(page),
+                eq(pageSize))).thenReturn(Collections.emptyList());
+
+        deltaIdentity.retrieveSecretsSharedWithMe(page, pageSize);
+        verify(mockDeltaClient, times(1))
+                .getSecretsSharedWithMe(
+                        eq(deltaIdentity.getId()),
+                        eq(page),
+                        eq(pageSize));
+    }
+
     private void execute(Runnable task) {
         IntStream.range(0, NUM_REPETITIONS).forEach(i -> task.run());
     }
