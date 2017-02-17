@@ -125,8 +125,7 @@ public class MultiShare {
 
     private void printSharedSecrets() throws Exception {
         for (DeltaIdentity identity: recipients.values()) {
-            List<DeltaSecret> secrets = client.getSecretsSharedWithMe(
-                    identity.getId(), 1, 5);
+            List<DeltaSecret> secrets = identity.retrieveSecretsSharedWithMe(1, 5);
             System.out.println(String.format(
                     "Identity %s has %d secrets shared with them:",
                     identity.getExternalId(), secrets.size()));
